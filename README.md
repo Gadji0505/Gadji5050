@@ -1,108 +1,90 @@
 import java.util.Scanner;
 
+// Основной класс
 public class AbstractClass {
-    public static void main(String[]args){
-
+    public static void main(String[] args) {
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("Укажите колличество фигур ");
+        System.out.println("Укажите количество фигур: ");
+        
+        Body[] myBody = new Body[myScanner.nextInt()];
 
-        Body []myBody = new Body [myScanner.nextInt()];
-
-        for(int i=0;i<myBody.length;i++){
-            System.out.println("Шар - 1  или Параллелепипед - 2");
-            if(myScanner.nextInt()==1){
-                System.out.println("Укажите радиус окружности ");
-                myBody[i]=new Sphere(myScanner.nextInt());
-            }else{
-                System.out.println("Укажите укажите размер параллелепипеда ");
-                myBody[i]=new Parallelepiped(myScanner.nextInt(),myScanner.nextInt(),myScanner.nextInt());
+        for (int i = 0; i < myBody.length; i++) {
+            System.out.println("Треугольник - 1 или Окружность - 2");
+            if (myScanner.nextInt() == 1) {
+                System.out.println("Укажите длины сторон треугольника (a, b, c): ");
+                double a = myScanner.nextDouble();
+                double b = myScanner.nextDouble();
+                double c = myScanner.nextDouble();
+                myBody[i] = new Triangle(a, b, c);
+            } else {
+                System.out.println("Укажите радиус окружности: ");
+                myBody[i] = new Circle(myScanner.nextDouble());
             }
         }
 
-        for(Body b:myBody){
+        for (Body b : myBody) {
             b.print();
         }
-
     }
 }
 
-
-
-
-
+// Абстрактный класс
 abstract public class Body {
-
-abstract double square();
-abstract double volume();
-abstract void print();
-
+    abstract double square();   // метод для вычисления площади
+    abstract double perimeter(); // метод для вычисления периметра
+    abstract void print();       // метод для вывода информации
 }
 
+// Класс Треугольник
+public class Triangle extends Body {
+    private double a, b, c;
 
-
-
-
-public class Parallelepiped extends Body{
-    private double a,b,c;
-
-    Parallelepiped(int a, int b, int c){
-        this.a=a;
-        this.b=b;
-        this.c=c;
+    Triangle(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
     }
 
     @Override
     double square() {
-        return 2*(a*b+a*c+b*c);
+        double s = (a + b + c) / 2; // полупериметр
+        return Math.sqrt(s * (s - a) * (s - b) * (s - c)); // формула Герона
     }
 
     @Override
-    double volume() {
-        return a*b*c;
+    double perimeter() {
+        return a + b + c; // периметр
     }
 
     @Override
     void print() {
-        System.out.println(
-                "Размеры сторон: "+
-                        "\nСторона а = "+a+
-                        "\nСторона b = "+b+
-                        "\nСторона c = "+c+
-                        "\nОбъём = "+this.volume()+"\nПлощадь = "+this.square()
-        );
-
+        System.out.println("Стороны треугольника: a = " + a + ", b = " + b + ", c = " + c +
+                           "\nПлощадь = " + this.square() + "\nПериметр = " + this.perimeter());
     }
-
-
-
 }
 
-
-
-
-
-
-public class Sphere extends Body{
+// Класс Окружность
+public class Circle extends Body {
     private double radius;
 
-    Sphere(int radius){
-        this.radius=radius;
-    }
-    @Override
-    double square() {
-        return Math.PI * Math.pow(radius,2);
+    Circle(double radius) {
+        this.radius = radius;
     }
 
     @Override
-    double volume() {
-        return 4*Math.PI*Math.pow(radius,3)/3;
+    double square() {
+        return Math.PI * Math.pow(radius, 2); // площадь круга
+    }
+
+    @Override
+    double perimeter() {
+        return 2 * Math.PI * radius; // длина окружности
     }
 
     @Override
     void print() {
-        System.out.println("" +
-                "Радиус шара = "+ radius+"" +
-                "\nОбъём ="+this.volume()+"\nПлощадь ="+this.square());
+        System.out.println("Радиус окружности = " + radius + 
+                           "\nПлощадь = " + this.square() + 
+                           "\nПериметр (длина окружности) = " + this.perimeter());
     }
-
 }
